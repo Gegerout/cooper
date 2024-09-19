@@ -7,7 +7,7 @@ class Api {
 
   Future<UserModel> registerUser(String login, String password, String location, int age, String gender) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/register",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/register",
           options: Options(validateStatus: (_) => true),
           data: {
             "username": login,
@@ -28,7 +28,7 @@ class Api {
 
   Future<UserModel> loginUser(String login, String password) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/login",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/login",
           options: Options(validateStatus: (_) => true),
           data: {"username": login, "password": password});
       if (res.statusCode == 200) {
@@ -43,7 +43,7 @@ class Api {
 
   Future<List<EventModel>> getEvents(int age, String gender, String location, String accessToken) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/events/sorted",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/events/sorted",
           options: Options(
               validateStatus: (_) => true,
               headers: {"Authorization": "Bearer $accessToken"}),
@@ -60,7 +60,7 @@ class Api {
 
   Future<void> addLike(int id, String accessToken) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/events/$id/like",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/events/$id/like",
           options: Options(
               validateStatus: (_) => true,
               headers: {"Authorization": "Bearer $accessToken"}));
@@ -74,7 +74,7 @@ class Api {
 
   Future<void> addComment(int id, String accessToken, String username, String comment) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/events/$id/comments",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/events/$id/comments",
           options: Options(validateStatus: (_) => true),
           data: {"username": username, "comment": comment});
       if (res.statusCode != 201) {
@@ -103,7 +103,7 @@ class Api {
 
   Future<void> joinEvent(int id, String accessToken, int userId) async {
     try {
-      final res = await dio.post("http://10.0.2.2:5000/events/$id/join",
+      final res = await dio.post("https://9164-5-18-146-225.ngrok-free.app/events/$id/join",
           options: Options(validateStatus: (_) => true),
           data: {"user_id": userId});
       if (res.statusCode != 200) {
@@ -116,7 +116,7 @@ class Api {
 
   Future<List<UserModel>> getUsers() async {
     try {
-      final res = await dio.get("http://10.0.2.2:5000/users",
+      final res = await dio.get("https://9164-5-18-146-225.ngrok-free.app/users",
           options: Options(validateStatus: (_) => true));
       if (res.statusCode != 200) {
         throw "Ошибка при загрузке рейтига";
