@@ -34,72 +34,66 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          ref.refresh(loadEvents).value;
-        }, child: const Icon(Icons.refresh),),
-        body: ref
-            .watch(loadEvents)
-            .when(
+        floatingActionButton: FloatingActionButton(
+          heroTag: "btn1",
+          onPressed: () {
+            ref.refresh(loadEvents).value;
+          },
+          child: const Icon(Icons.refresh),
+        ),
+        body: ref.watch(loadEvents).when(
             data: (value) {
               return Center(
                 child: SizedBox(
                   width: 400,
                   child: ScrollConfiguration(
-                    behavior: const ScrollBehavior()
-                        .copyWith(scrollbars: false),
+                    behavior:
+                        const ScrollBehavior().copyWith(scrollbars: false),
                     child: ListView.builder(
                       itemBuilder: (context, index) {
                         final row = value[index];
 
                         return Padding(
-                          padding:
-                          const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          EventCardScreen(row,
-                                              model: widget.model)))
-                                  .then((value) {
-                                ref
-                                    .refresh(loadEvents)
-                                    .value;
+                                      builder: (context) => EventCardScreen(row,
+                                          model: widget.model))).then((value) {
+                                ref.refresh(loadEvents).value;
                               });
                             },
                             child: SizedBox(
                               width: 400,
                               child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Image.network(
                                     row.photos.first.toString().replaceAll(
-                                        "http://10.0.2.2:5000",
-                                        "https://1d23-5-18-146-225.ngrok-free.app"),
+                                        "http://127.0.0.1:5000",
+                                        "https://9164-5-18-146-225.ngrok-free.app"),
                                     width: 400,
                                     height: 400,
                                     fit: BoxFit.cover,
                                     loadingBuilder: (BuildContext context,
                                         Widget child,
-                                        ImageChunkEvent?
-                                        loadingProgress) {
+                                        ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) {
                                         return child;
                                       }
                                       return SizedBox(
                                         height: 400,
                                         child: Center(
-                                          child:
-                                          CircularProgressIndicator(
+                                          child: CircularProgressIndicator(
                                             value: loadingProgress
-                                                .expectedTotalBytes !=
-                                                null
+                                                        .expectedTotalBytes !=
+                                                    null
                                                 ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -110,9 +104,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                                         height: 400,
                                         child: Center(
                                             child: Icon(
-                                              Icons.image,
-                                              size: 60,
-                                            )),
+                                          Icons.image,
+                                          size: 60,
+                                        )),
                                       );
                                     },
                                   ),
@@ -131,134 +125,121 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                                         onPressed: () async {
                                           await ref
                                               .read(authProvider)
-                                              .likeEvent(
-                                              row.id,
-                                              widget
-                                                  .model.accessToken);
+                                              .likeEvent(row.id,
+                                                  widget.model.accessToken);
                                           setState(() {
                                             row.isLiked = !row.isLiked;
-                                            row.likes +=
-                                            row.isLiked ? 1 : -1;
+                                            row.likes += row.isLiked ? 1 : -1;
                                           });
                                         },
                                       ),
                                       Text(
                                         '${row.likes}',
-                                        style:
-                                        const TextStyle(fontSize: 18),
+                                        style: const TextStyle(fontSize: 18),
                                       ),
-                                      const SizedBox(width: 18,),
+                                      const SizedBox(
+                                        width: 18,
+                                      ),
                                       const Text(
                                         'Зарегистрировано: ',
-                                        style:
-                                        TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: 18),
                                       ),
                                       Text(
                                         '${row.userCount}',
-                                        style:
-                                        const TextStyle(fontSize: 18),
+                                        style: const TextStyle(fontSize: 18),
                                       ),
                                     ],
                                   ),
                                   Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 12),
+                                    padding: const EdgeInsets.only(left: 12),
                                     child: Text(row.title,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18)),
                                   ),
                                   Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 12),
+                                    padding: const EdgeInsets.only(left: 12),
                                     child: Text(
                                       row.description,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 12),
+                                    padding: const EdgeInsets.only(left: 12),
                                     child: Text(
                                       row.date,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.grey),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
                                     ),
                                   ),
                                   row.comments.isEmpty
                                       ? Container()
                                       : Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 12, top: 12),
-                                    child: SizedBox(
-                                      height: 20,
-                                      child: ListView.builder(
-                                        physics:
-                                        const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: min(
-                                            row.comments.length, 1),
-                                        itemBuilder: (context,
-                                            commentIndex) {
-                                          return RichText(
-                                            overflow: TextOverflow
-                                                .ellipsis,
-                                            text: TextSpan(
-                                              style: DefaultTextStyle
-                                                  .of(context)
-                                                  .style,
-                                              children: [
-                                                TextSpan(
-                                                  text:
-                                                  "${row.comments[commentIndex]["username"]} ",
-                                                  style:
-                                                  const TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .bold,
-                                                    color: Colors
-                                                        .black, // Ensure color is set
+                                          padding: const EdgeInsets.only(
+                                              left: 12, top: 12),
+                                          child: SizedBox(
+                                            height: 20,
+                                            child: ListView.builder(
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  min(row.comments.length, 1),
+                                              itemBuilder:
+                                                  (context, commentIndex) {
+                                                return RichText(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  text: TextSpan(
+                                                    style: DefaultTextStyle.of(
+                                                            context)
+                                                        .style,
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "${row.comments[commentIndex]["username"]} ",
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .black, // Ensure color is set
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text:
+                                                            "${row.comments[commentIndex]["comment"]}",
+                                                        style: const TextStyle(
+                                                          color: Colors
+                                                              .black, // Ensure color is set for normal text
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                  "${row.comments[commentIndex]["comment"]}",
-                                                  style:
-                                                  const TextStyle(
-                                                    color: Colors
-                                                        .black, // Ensure color is set for normal text
-                                                  ),
-                                                ),
-                                              ],
+                                                );
+                                              },
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                                          ),
+                                        ),
                                   TextButton(
                                       onPressed: () {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EventCardScreen(
-                                                        row,
-                                                        model: widget
-                                                            .model)))
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EventCardScreen(row,
+                                                            model:
+                                                                widget.model)))
                                             .then((value) {
-                                          ref
-                                              .refresh(loadEvents)
-                                              .value;
+                                          ref.refresh(loadEvents).value;
                                         });
                                       },
                                       child: Text(
                                         row.comments.isEmpty
                                             ? "Подробнее"
                                             : "Смотреть все комментарии",
-                                        style: const TextStyle(
-                                            color: Colors.grey),
+                                        style:
+                                            const TextStyle(color: Colors.grey),
                                       ))
                                 ],
                               ),
@@ -274,20 +255,20 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
             },
             error: (e, s) => Center(child: Text(e.toString())),
             loading: () => Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                const SizedBox(height: 30),
-                Text(
-                  "Подбираем мероприятия для вас)",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 20),
-                )
-              ],
-            )));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    const SizedBox(height: 30),
+                    Text(
+                      "Подбираем мероприятия для вас)",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 20),
+                    )
+                  ],
+                )));
   }
 }

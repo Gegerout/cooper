@@ -42,8 +42,8 @@ class _EventCardScreenState extends ConsumerState<EventCardScreen> {
               children: [
                 Image.network(
                   event.photos.first.toString().replaceAll(
-                      "http://10.0.2.2:5000",
-                      "https://fab9-185-143-223-109.ngrok-free.app"),
+                      "http://127.0.0.1:5000",
+                      "https://9164-5-18-146-225.ngrok-free.app"),
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,

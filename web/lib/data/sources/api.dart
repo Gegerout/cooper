@@ -7,18 +7,21 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class Api {
-  final Dio dio = Dio();  // Инициализация Dio для HTTP-запросов
+  final Dio dio = Dio(); // Инициализация Dio для HTTP-запросов
 
   Future<UserModel> loginUser(String login, String password) async {
     try {
-      final res = await dio.post("http://127.0.0.1:5000/login",
-          options: Options(validateStatus: (_) => true),
+      final res = await dio.post(
+          "https://9164-5-18-146-225.ngrok-free.app/login",
+          options: Options(
+              validateStatus: (_) => true,
+              headers: {"ngrok-skip-browser-warning": "69420"}),
           data: {"username": login, "password": password});
       if (res.statusCode == 200) {
         final UserModel model = UserModel.fromJson(res.data);
-        return model;  // Возврат модели пользователя
+        return model; // Возврат модели пользователя
       } else {
-        throw "Неправильный логин или пароль";  // Обработка ошибок
+        throw "Неправильный логин или пароль"; // Обработка ошибок
       }
     } catch (e) {
       throw "Неправильный логин или пароль";
@@ -27,12 +30,15 @@ class Api {
 
   Future<List<EventModel>> getEvents() async {
     try {
-      final res = await dio.get("http://127.0.0.1:5000/events",
-          options: Options(validateStatus: (_) => true));
+      final res = await dio.get(
+          "https://9164-5-18-146-225.ngrok-free.app/events",
+          options: Options(
+              validateStatus: (_) => true,
+              headers: {"ngrok-skip-browser-warning": "69420"}));
       if (res.statusCode == 200) {
         final models =
-        (res.data as List).map((e) => EventModel.fromJson(e)).toList();
-        return models;  // Возврат списка моделей событий
+            (res.data as List).map((e) => EventModel.fromJson(e)).toList();
+        return models; // Возврат списка моделей событий
       } else {
         throw "Ошибка при загрузке мероприятий";
       }
@@ -43,10 +49,12 @@ class Api {
 
   Future<void> addLike(int id, String accessToken) async {
     try {
-      final res = await dio.post("http://127.0.0.1:5000/events/$id/like",
-          options: Options(
-              validateStatus: (_) => true,
-              headers: {"Authorization": "Bearer $accessToken"}));
+      final res = await dio.post(
+          "https://9164-5-18-146-225.ngrok-free.app/events/$id/like",
+          options: Options(validateStatus: (_) => true, headers: {
+            "Authorization": "Bearer $accessToken",
+            "ngrok-skip-browser-warning": "69420"
+          }));
       if (res.statusCode != 200) {
         throw "Ошибка при лайке";
       }
@@ -55,12 +63,15 @@ class Api {
     }
   }
 
-  Future<void> addComment(int id, String accessToken, String username, String comment) async {
+  Future<void> addComment(
+      int id, String accessToken, String username, String comment) async {
     try {
-      final res = await dio.post("http://127.0.0.1:5000/events/$id/comments",
-          options: Options(
-              validateStatus: (_) => true,
-              headers: {"Authorization": "Bearer $accessToken"}),
+      final res = await dio.post(
+          "https://9164-5-18-146-225.ngrok-free.app/events/$id/comments",
+          options: Options(validateStatus: (_) => true, headers: {
+            "Authorization": "Bearer $accessToken",
+            "ngrok-skip-browser-warning": "69420"
+          }),
           data: {"username": username, "comment": comment});
       if (res.statusCode != 201) {
         throw "Ошибка при комментарии";
@@ -79,17 +90,21 @@ class Api {
       if (res.statusCode != 200) {
         throw "Ошибка при предсказании типа";
       } else {
-        return res.data;  // Возврат предсказанных данных
+        return res.data; // Возврат предсказанных данных
       }
     } catch (e) {
       throw "Ошибка при предсказании типа";
     }
   }
 
-  Future<double> predictPopularity(String type, String format, String location, String frequency) async {
+  Future<double> predictPopularity(
+      String type, String format, String location, String frequency) async {
     try {
-      final res = await dio.post("http://127.0.0.1:5000/predict_popularity",
-          options: Options(validateStatus: (_) => true),
+      final res = await dio.post(
+          "https://9164-5-18-146-225.ngrok-free.app/predict_popularity",
+          options: Options(
+              validateStatus: (_) => true,
+              headers: {"ngrok-skip-browser-warning": "69420"}),
           data: {
             "event_type": type,
             "event_format": format,
@@ -99,23 +114,33 @@ class Api {
       if (res.statusCode != 200) {
         throw "Ошибка при подсчете популярности";
       } else {
-        return res.data["probability"];  // Возврат предсказанной вероятности
+        return res.data["probability"]; // Возврат предсказанной вероятности
       }
     } catch (e) {
       throw "Ошибка при подсчете популярности";
     }
   }
 
-  Future<void> addEventWeb(String accessToken, String title, String description,
-      String place, DateTime date, String type, String kind,
-      String frequency, List<XFile> imageFiles, double popularity) async {
+  Future<void> addEventWeb(
+      String accessToken,
+      String title,
+      String description,
+      String place,
+      DateTime date,
+      String type,
+      String kind,
+      String frequency,
+      List<XFile> imageFiles,
+      double popularity) async {
     try {
-      String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(date);  // Форматирование даты
+      String formattedDate =
+          DateFormat('yyyy-MM-dd HH:mm').format(date); // Форматирование даты
       List<MultipartFile> multipartImages = [];
 
       // Конвертация XFile в MultipartFile
       for (XFile file in imageFiles) {
-        Uint8List fileBytes = await file.readAsBytes(); // Чтение файла как байтов
+        Uint8List fileBytes =
+            await file.readAsBytes(); // Чтение файла как байтов
         MultipartFile multipartFile = MultipartFile.fromBytes(
           fileBytes,
           filename: file.name, // Использование имени файла
@@ -139,7 +164,10 @@ class Api {
         "http://127.0.0.1:5000/events",
         options: Options(
           validateStatus: (_) => true,
-          headers: {"Authorization": "Bearer $accessToken"},
+          headers: {
+            "Authorization": "Bearer $accessToken",
+            "ngrok-skip-browser-warning": "69420"
+          },
         ),
         data: formData,
       );
@@ -154,15 +182,18 @@ class Api {
 
   Future<List<UserModel>> getUsers() async {
     try {
-      final res = await dio.get("http://127.0.0.1:5000/users",
-          options: Options(validateStatus: (_) => true));
+      final res = await dio.get(
+          "https://9164-5-18-146-225.ngrok-free.app/users",
+          options: Options(
+              validateStatus: (_) => true,
+              headers: {"ngrok-skip-browser-warning": "69420"}));
 
       if (res.statusCode != 200) {
         throw "Ошибка при загрузке рейтига";
       } else {
         final models =
-        (res.data as List).map((e) => UserModel.fromJson(e)).toList();
-        return models;  // Возврат списка моделей пользователей
+            (res.data as List).map((e) => UserModel.fromJson(e)).toList();
+        return models; // Возврат списка моделей пользователей
       }
     } catch (e) {
       throw "Ошибка при загрузке рейтига";

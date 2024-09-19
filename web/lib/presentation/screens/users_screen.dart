@@ -26,9 +26,13 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        ref.read(authProvider).getUsers();
-      }, child: const Icon(Icons.refresh),),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "btn2",
+        onPressed: () {
+          ref.read(authProvider).getUsers();
+        },
+        child: const Icon(Icons.refresh),
+      ),
       body: ListView.builder(
         itemBuilder: (context, index) {
           final row = ref.watch(authProvider).users[index];
