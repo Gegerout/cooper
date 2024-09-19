@@ -47,7 +47,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               if (value != null) {
                 return HomeScreen(model: value);
               } else {
-                return const RegisterScreen();
+                return RegisterScreen();
               }
             },
             error: (e, s) => Center(child: Text(e.toString())),

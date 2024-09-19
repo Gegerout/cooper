@@ -8,7 +8,7 @@ def send_notification(body, title):
     # Данные для отправки уведомления, включающие сообщение и заголовок
     data = {
         "message": {
-            "token": "cX-6e-9DRjyBGslMV4usFD:APA91bHjX70B4fiFQztGHR19Gp_wW9Ry2FhQmqb6W9qq_ZxKsfDp7ccpi9kLgXe7J91zAbe_dxlAk53q8Zdwef-TIE3EJaP0jfIWjRiYejLVR5BmVGZmIG_W278cnVUHGTWAoaz5IZYw",  # Токен устройства, на которое будет отправлено уведомление
+            "token": "clmOk4nJTAKX0RMnQNvbYf:APA91bGc4vQiie8842NnrBUoGkl8zt2x1OfhwVen0YXSLXeNxdzmxiGTT5mm7JsDBgi9ONTIEMpnoT5M15CFCBquT2zAGO9DLJfI35fv5ouFHehkkuSwrPkZwWGFpcmwYfqewD1nPfS4",  # Токен устройства, на которое будет отправлено уведомление
             "notification": {
                 "body": body,  # Тело уведомления
                 "title": title  # Заголовок уведомления

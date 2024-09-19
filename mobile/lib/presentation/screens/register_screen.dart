@@ -1,13 +1,16 @@
 import 'package:eco_mobile/presentation/screens/home_screen.dart';
 import 'package:eco_mobile/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_vk/flutter_login_vk.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../states/states.dart';
 
 // Экран регистрации
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key});
+  final plugin = VKLogin(debug: true);
+
+  RegisterScreen({super.key});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -38,6 +41,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     'ЮВАО'
   ];
   final List<String> genders = ['Мужской', 'Женский'];
+  String? _sdkVersion;
+  VKAccessToken? _token;
+  VKUserProfile? _profile;
+  String? _email;
+  bool _sdkInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getSdkVersion();
+    _initSdk();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,13 +271,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.asset(
-                            "assets/vk.png",
-                            width: 50,
-                            height: 50,
-                          )),
+                      InkWell(
+                        onTap: () async {
+                          _onPressedLogInButton(context);
+                        },
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.asset(
+                              "assets/vk.png",
+                              width: 50,
+                              height: 50,
+                            )),
+                      ),
                       const SizedBox(width: 20,),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(50),
@@ -280,5 +301,51 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _initSdk() async {
+    await widget.plugin.initSdk();
+    _sdkInitialized = true;
+    await _updateLoginInfo();
+  }
+
+  Future<void> _getSdkVersion() async {
+    final sdkVersion = await widget.plugin.sdkVersion;
+    setState(() {
+      _sdkVersion = sdkVersion;
+    });
+  }
+
+  Future<void> _updateLoginInfo() async {
+    if (!_sdkInitialized) return;
+
+    final plugin = widget.plugin;
+    final token = await plugin.accessToken;
+    final profileRes = token != null ? await plugin.getUserProfile() : null;
+    final email = token != null ? await plugin.getUserEmail() : null;
+
+    setState(() {
+      _token = token;
+      _profile = profileRes?.asValue?.value;
+      _email = email;
+      nameCont.text = "${_profile!.firstName} ${_profile!.lastName}";
+    });
+  }
+
+  Future<void> _onPressedLogInButton(BuildContext context) async {
+    final res = await widget.plugin.logIn(scope: [
+      VKScope.email,
+    ]);
+
+    if (res.isError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ошибка входа: ${res.asError!.error}'),
+        ),
+      );
+    } else {
+      final loginResult = res.asValue!.value;
+      if (!loginResult.isCanceled) await _updateLoginInfo();
+    }
   }
 }

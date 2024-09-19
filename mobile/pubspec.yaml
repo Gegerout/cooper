@@ -46,6 +46,7 @@ dependencies:
   flutter_map: ^7.0.2
   flutter_native_splash: ^2.4.1
   latlong2: ^0.9.1
+  flutter_login_vk: ^2.2.2+1
 
 dev_dependencies:
   flutter_test:

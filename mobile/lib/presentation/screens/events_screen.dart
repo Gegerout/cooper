@@ -131,7 +131,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                                         Image.network(
                                           row.photos.first.toString().replaceAll(
                                               "http://10.0.2.2:5000",
-                                              "https://e350-5-18-146-225.ngrok-free.app"),
+                                              "https://9164-5-18-146-225.ngrok-free.app"),
                                           width: double.infinity,
                                           height: 400,
                                           fit: BoxFit.cover,
@@ -307,7 +307,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                                                   : "Смотреть все комментарии",
                                               style: const TextStyle(
                                                   color: Colors.grey),
-                                            ))
+                                            )),
+                                        const Divider()
                                       ],
                                     ),
                                   ),
